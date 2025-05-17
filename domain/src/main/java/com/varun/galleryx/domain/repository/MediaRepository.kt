@@ -5,6 +5,6 @@ import com.varun.galleryx.domain.model.MediaItem
 
 interface MediaRepository {
 
-    fun getAllAlbums(): List<Album>
-    fun getMediaInAlbum(albumName: String): List<MediaItem>
+    suspend fun getAllAlbums(): List<Album>
+    suspend fun getMediaInAlbum(albumName: String): List<MediaItem>
 }
