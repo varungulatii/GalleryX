@@ -9,9 +9,10 @@ import com.varun.galleryx.domain.model.MediaType
 import com.varun.galleryx.domain.repository.MediaRepository
 import javax.inject.Inject
 import androidx.core.net.toUri
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 class MediaRepositoryImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : MediaRepository {
 
     override suspend fun getAllAlbums(): List<Album> {
