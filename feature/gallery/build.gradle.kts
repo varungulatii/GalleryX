@@ -39,6 +39,7 @@ dependencies {
 
     implementation(libs.androidx.ui)
     implementation(libs.material3)
+    implementation(libs.coil.compose)
 
     implementation(project(":domain"))
     implementation(project(":core"))
