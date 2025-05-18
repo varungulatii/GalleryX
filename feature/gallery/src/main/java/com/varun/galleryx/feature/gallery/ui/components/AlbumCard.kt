@@ -15,9 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.varun.galleryx.domain.model.Album
+import com.varun.galleryx.feature.gallery.R
 
 @Composable
 fun AlbumCard(
@@ -31,8 +34,14 @@ fun AlbumCard(
             .padding(4.dp)
             .clickable(onClick = onClick)
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(album.thumbnailUri),
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(album.thumbnailUri)
+                .size(600)
+                .crossfade(true)
+                .placeholder(R.drawable.placeholder_album)
+                .error(R.drawable.placeholder_album)
+                .build(),
             contentDescription = album.name,
             modifier = Modifier
                 .fillMaxWidth()

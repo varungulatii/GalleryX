@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GalleryViewModel @Inject constructor(
+class AlbumViewModel @Inject constructor(
     private val getAllAlbumsUseCase: GetAllAlbumsUseCase
 ) : ViewModel() {
 

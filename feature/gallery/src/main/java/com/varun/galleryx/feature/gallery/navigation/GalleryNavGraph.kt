@@ -5,17 +5,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.varun.galleryx.feature.gallery.ui.GalleryScreen
 import com.varun.galleryx.feature.gallery.ui.AlbumDetailScreen
 import com.varun.galleryx.feature.gallery.ui.AlbumDetailViewModel
-import com.varun.galleryx.feature.gallery.ui.GalleryViewModel
+import com.varun.galleryx.feature.gallery.ui.AlbumScreen
+import com.varun.galleryx.feature.gallery.ui.AlbumViewModel
 
 @Composable
 fun GalleryNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "gallery") {
         composable("gallery") {
-            val viewModel: GalleryViewModel = hiltViewModel()
-            GalleryScreen(navController, viewModel)
+            val viewModel: AlbumViewModel = hiltViewModel()
+            AlbumScreen(navController, viewModel)
         }
 
         composable("albumDetail/{albumName}") { backStackEntry ->
