@@ -1,11 +1,9 @@
-package com.varun.galleryx.feature.gallery
+package com.varun.galleryx.feature.gallery.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,13 +16,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.varun.galleryx.core.permission.PermissionHelper
-import com.varun.galleryx.domain.model.Album
-import com.varun.galleryx.feature.gallery.navigation.GalleryUiState
-import com.varun.galleryx.feature.gallery.navigation.GalleryViewModel
+import com.varun.galleryx.feature.gallery.ui.components.AlbumCard
 
 @Composable
 fun GalleryScreen(navController: NavController, viewModel: GalleryViewModel = hiltViewModel()) {
@@ -60,9 +55,9 @@ fun GalleryScreen(navController: NavController, viewModel: GalleryViewModel = hi
                     val albums = (uiState as GalleryUiState.Success).albums
                     LazyColumn{
                         items(albums) { album ->
-                            AlbumListItem(album){
+                            AlbumCard(album = album, onClick = {
                                 navController.navigate("albumDetail/${album.name}")
-                            }
+                            })
                         }
                     }
                 }
@@ -75,15 +70,4 @@ fun GalleryScreen(navController: NavController, viewModel: GalleryViewModel = hi
             }
         }
     }
-}
-
-@Composable
-fun AlbumListItem(album: Album, onClick: () -> Unit) {
-    Text(
-        text = "Album: ${album.name} - ${album.itemCount} items",
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp)
-    )
 }

@@ -5,7 +5,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.varun.galleryx.feature.gallery.GalleryScreen
+import com.varun.galleryx.feature.gallery.ui.GalleryScreen
+import com.varun.galleryx.feature.gallery.ui.AlbumDetailScreen
+import com.varun.galleryx.feature.gallery.ui.AlbumDetailViewModel
+import com.varun.galleryx.feature.gallery.ui.GalleryViewModel
 
 @Composable
 fun GalleryNavGraph(navController: NavHostController) {

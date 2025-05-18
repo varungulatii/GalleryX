@@ -1,4 +1,4 @@
-package com.varun.galleryx.feature.gallery.navigation
+package com.varun.galleryx.feature.gallery.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
