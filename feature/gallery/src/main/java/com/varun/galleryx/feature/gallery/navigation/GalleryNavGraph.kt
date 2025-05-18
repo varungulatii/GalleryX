@@ -12,7 +12,13 @@ fun GalleryNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "gallery") {
         composable("gallery") {
             val viewModel: GalleryViewModel = hiltViewModel()
-            GalleryScreen(viewModel)
+            GalleryScreen(navController, viewModel)
+        }
+
+        composable("albumDetail/{albumName}") { backStackEntry ->
+            val albumName = backStackEntry.arguments?.getString("albumName") ?: return@composable
+            val detailViewModel: AlbumDetailViewModel = hiltViewModel()
+            AlbumDetailScreen(albumName, detailViewModel)
         }
     }
 }
