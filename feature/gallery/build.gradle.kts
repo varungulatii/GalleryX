@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.material3)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(project(":domain"))
     implementation(project(":core"))
