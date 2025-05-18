@@ -22,33 +22,63 @@ class MediaRepositoryImpl @Inject constructor(
         val projection = arrayOf(
             MediaStore.MediaColumns._ID,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.DATA
+            MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.MIME_TYPE
         )
-        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Files.getContentUri("external")
+
+        val selection = ("${MediaStore.Files.FileColumns.MEDIA_TYPE}=? OR " +
+                "${MediaStore.Files.FileColumns.MEDIA_TYPE}=?")
+
+        val selectionArgs = arrayOf(
+            MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
+            MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
+        )
+
         val albumMap = mutableMapOf<String, MutableList<String>>()
+        val allImages = mutableListOf<String>()
+        val allVideos = mutableListOf<String>()
 
-        contentResolver.query(uri,
+        contentResolver.query(
+            uri,
             projection,
-            null,
-            null,
-            null)?.use { cursor ->
-                val bucketColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME)
-                val dataColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+            selection,
+            selectionArgs,
+            "${MediaStore.MediaColumns.DATE_ADDED} DESC"
+        )?.use { cursor ->
+            val bucketCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME)
+            val dataCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+            val mimeTypeCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
-                while ( cursor.moveToNext() ) {
-                    val folderName = cursor.getString(bucketColumn) ?: "Unknown"
-                    val filePath = cursor.getString(dataColumn)
-                    albumMap.getOrPut(folderName) { mutableListOf() }.add(filePath)
-                }
+            while ( cursor.moveToNext() ) {
+                val folderName = cursor.getString(bucketCol) ?: "Unknown"
+                val filePath = cursor.getString(dataCol)
+                val mimeType = cursor.getString(mimeTypeCol) ?: ""
+
+                albumMap.getOrPut(folderName) { mutableListOf() }.add(filePath)
+
+                if (mimeType.startsWith("image")) allImages.add(filePath)
+                if (mimeType.startsWith("video")) allVideos.add(filePath)
+            }
         }
 
-        return albumMap.map { (folderName, filePaths) ->
+        val realAlbums =  albumMap.map { (folderName, filePaths) ->
             Album(
                 name  = folderName,
                 itemCount = filePaths.size,
                 thumbnailUri = filePaths.firstOrNull().orEmpty()
             )
-        }.sortedByDescending { it.itemCount }
+        }
+
+        val virtualAlbums = mutableListOf<Album>()
+        if (allImages.isNotEmpty()) {
+            virtualAlbums.add(Album("All Images", allImages.size, allImages.first()))
+        }
+        if (allVideos.isNotEmpty()) {
+            virtualAlbums.add(Album("All Videos", allVideos.size, allVideos.first()))
+        }
+
+        return (virtualAlbums + realAlbums).sortedByDescending { it.itemCount }
     }
 
     override suspend fun getMediaInAlbum(albumName: String): List<MediaItem> {
@@ -61,10 +91,25 @@ class MediaRepositoryImpl @Inject constructor(
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
         )
-        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val uri = MediaStore.Files.getContentUri("external")
 
-        val selection = "${MediaStore.MediaColumns.BUCKET_DISPLAY_NAME} = ?"
-        val selectionArgs = arrayOf(albumName)
+        val selection: String
+        val selectionArgs: Array<String>
+
+        when (albumName) {
+            "All Images" -> {
+                selection = "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"
+                selectionArgs = arrayOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
+            }
+            "All Videos" -> {
+                selection = "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"
+                selectionArgs = arrayOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
+            }
+            else -> {
+                selection = "${MediaStore.MediaColumns.BUCKET_DISPLAY_NAME} = ?"
+                selectionArgs = arrayOf(albumName)
+            }
+        }
 
         val mediaItems = mutableListOf<MediaItem>()
 
