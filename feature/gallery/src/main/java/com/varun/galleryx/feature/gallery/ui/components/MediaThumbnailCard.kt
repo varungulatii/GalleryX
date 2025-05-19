@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,7 @@ fun MediaThumbnailCard(item: MediaItem) {
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .padding(2.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         )
     } else {
@@ -49,9 +50,9 @@ fun MediaThumbnailCard(item: MediaItem) {
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(22.dp))
                 .padding(2.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(Color.Cyan),
             contentAlignment = Alignment.Center
         ) {
             Icon(

@@ -86,7 +86,7 @@ class MediaRepositoryImpl @Inject constructor(
             virtualAlbums.add(Album("All Images", allImages.size, allImages.first()))
         }
         if (allVideos.isNotEmpty()) {
-            virtualAlbums.add(Album("All Videos", allVideos.size, allVideos.first()))
+            virtualAlbums.add(Album("All Videos", allVideos.size, allVideos.first(), isVideoThumbnail = true))
         }
 
         return (virtualAlbums + realAlbums).sortedByDescending { it.itemCount }

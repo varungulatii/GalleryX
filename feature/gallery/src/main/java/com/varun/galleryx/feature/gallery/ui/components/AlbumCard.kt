@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -38,7 +39,7 @@ fun AlbumCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(7.dp)
             .testTag("albumCard_${album.name}")
             .clickable(onClick = onClick)
     ) {
@@ -55,7 +56,7 @@ fun AlbumCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f) // square
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(22.dp)),
                 contentScale = ContentScale.Crop
             )
         }
@@ -64,8 +65,8 @@ fun AlbumCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Color.Cyan),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
