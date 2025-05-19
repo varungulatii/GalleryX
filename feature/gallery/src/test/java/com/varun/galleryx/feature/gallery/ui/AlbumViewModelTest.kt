@@ -1,9 +1,7 @@
-package com.varun.galleryx.feature.gallery
+package com.varun.galleryx.feature.gallery.ui
 
 import com.varun.galleryx.domain.model.Album
 import com.varun.galleryx.domain.usecase.GetAllAlbumsUseCase
-import com.varun.galleryx.feature.gallery.ui.AlbumViewModel
-import com.varun.galleryx.feature.gallery.ui.GalleryUiState
 import com.varun.galleryx.feature.gallery.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify

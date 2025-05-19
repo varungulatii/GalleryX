@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +48,7 @@ fun AlbumScreenFake(
                     }) {
                         Icon(
                             imageVector = if (layoutMode.value == LayoutMode.Grid)
-                                Icons.Default.ViewList else Icons.Default.GridView,
+                                Icons.AutoMirrored.Filled.ViewList else Icons.Default.GridView,
                             contentDescription = "Toggle layout"
                         )
                     }

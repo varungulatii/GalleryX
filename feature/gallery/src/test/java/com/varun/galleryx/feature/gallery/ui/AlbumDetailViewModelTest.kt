@@ -1,11 +1,10 @@
-package com.varun.galleryx.feature.gallery.utils
+package com.varun.galleryx.feature.gallery.ui
 
 import androidx.lifecycle.SavedStateHandle
 import com.varun.galleryx.domain.model.MediaItem
 import com.varun.galleryx.domain.model.MediaType
 import com.varun.galleryx.domain.usecase.GetMediaInAlbumUseCase
-import com.varun.galleryx.feature.gallery.ui.AlbumDetailUiState
-import com.varun.galleryx.feature.gallery.ui.AlbumDetailViewModel
+import com.varun.galleryx.feature.gallery.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

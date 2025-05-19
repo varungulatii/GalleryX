@@ -35,7 +35,7 @@ class MediaRepositoryImpl @Inject constructor(
             MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
         )
 
-        val albumMap = mutableMapOf<String, MutableList<String>>()
+        val albumMap = mutableMapOf<String, MutableList<Pair<String, String>>>()
         val allImages = mutableListOf<String>()
         val allVideos = mutableListOf<String>()
 
@@ -50,23 +50,34 @@ class MediaRepositoryImpl @Inject constructor(
             val dataCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
             val mimeTypeCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
 
-            while ( cursor.moveToNext() ) {
+            while (cursor.moveToNext()) {
                 val folderName = cursor.getString(bucketCol) ?: "Unknown"
                 val filePath = cursor.getString(dataCol)
                 val mimeType = cursor.getString(mimeTypeCol) ?: ""
 
-                albumMap.getOrPut(folderName) { mutableListOf() }.add(filePath)
+                val fileType = if (mimeType.startsWith("image")) {
+                    allImages.add(filePath)
+                    "image"
+                } else if (mimeType.startsWith("video")) {
+                    allVideos.add(filePath)
+                    "video"
+                } else continue
 
-                if (mimeType.startsWith("image")) allImages.add(filePath)
-                if (mimeType.startsWith("video")) allVideos.add(filePath)
+                albumMap.getOrPut(folderName) { mutableListOf() }.add(filePath to fileType)
             }
         }
 
-        val realAlbums =  albumMap.map { (folderName, filePaths) ->
+        val realAlbums = albumMap.map { (folderName, files) ->
+            val imageThumb = files.firstOrNull { it.second == "image" }?.first
+            val videoThumb = files.firstOrNull { it.second == "video" }?.first
+            val thumbnail = imageThumb ?: videoThumb
+            val isVideoThumb = imageThumb == null && videoThumb != null
+
             Album(
-                name  = folderName,
-                itemCount = filePaths.size,
-                thumbnailUri = filePaths.firstOrNull().orEmpty()
+                name = folderName,
+                itemCount = files.size,
+                thumbnailUri = thumbnail.orEmpty(),
+                isVideoThumbnail = isVideoThumb
             )
         }
 
