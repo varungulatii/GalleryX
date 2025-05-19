@@ -38,6 +38,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.material3)
     implementation(libs.coil.compose)
     implementation(libs.androidx.material.icons.extended)
@@ -67,5 +68,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.androidx.activity.compose)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
