@@ -16,11 +16,12 @@ import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -29,6 +30,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.varun.galleryx.domain.model.Album
 import com.varun.galleryx.feature.gallery.R
+
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import androidx.compose.foundation.Image
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AlbumCard(
@@ -59,8 +66,63 @@ fun AlbumCard(
                     .clip(RoundedCornerShape(22.dp)),
                 contentScale = ContentScale.Crop
             )
-        }
-        else {
+        } else if (album.thumbnailUri != null ) {
+            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+            LaunchedEffect(album.thumbnailUri) {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val retriever = MediaMetadataRetriever()
+                        retriever.setDataSource(album.thumbnailUri)
+                        bitmap = retriever.getFrameAtTime(1_000_000)
+                        retriever.release()
+                    } catch (e: Exception) {
+                        bitmap = null
+                    }
+                }
+            }
+
+            if (bitmap != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(22.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    bitmap?.let{
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = album.name,
+                            modifier = Modifier.matchParentSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.PlayCircle,
+                        contentDescription = "Video thumbnail",
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(Color.Cyan),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayCircle,
+                        contentDescription = "Video thumbnail",
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
