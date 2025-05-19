@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("dagger.hilt.android.plugin")
     kotlin("kapt")
+    id("jacoco")
 }
 
 android {
@@ -76,4 +77,21 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val javaClasses = fileTree("${layout.buildDirectory}/intermediates/javac/debug") {
+        exclude("**/Hilt*.*", "**/BuildConfig.*", "**/R.*")
+    }
+
+    classDirectories.setFrom(layout.files(javaClasses)) //
+    sourceDirectories.setFrom(files("src/main/java"))
+    executionData.setFrom(fileTree(layout.buildDirectory).include("**/testDebugUnitTest.exec"))
 }
