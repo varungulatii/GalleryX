@@ -78,7 +78,7 @@ Includes:
 
 ---
 
-## 🛠️ Optional Extras (Completed ✅)
+## 🛠️ Optional Extras (Completed)
 
 - Grid/List toggle on both screens
 - Scroll performance optimizations using AsyncImage
@@ -88,6 +88,19 @@ Includes:
 
 ---
 
+### 📊 Code Coverage Report
+
+To generate and view code coverage:
+
+```bash
+./gradlew clean testDebugUnitTest jacocoTestReport
+```
+
+The HTML coverage report will be available at:
+
+```
+app/build/reports/jacoco/jacocoTestReport/html/index.html
+```
 ## 🙋 Author
 
 Created by Varun Gulati  
