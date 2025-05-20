@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,11 +42,23 @@ import com.varun.galleryx.core.permission.PermissionHelper
 import com.varun.galleryx.feature.gallery.ui.components.AlbumCard
 import com.varun.galleryx.feature.gallery.ui.utils.LayoutMode
 
+@Composable
+fun AlbumScreen(navController: NavController) {
+    val viewModel: AlbumViewModel = hiltViewModel()
+    AlbumScreen(navController = navController, viewModel = viewModel)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumScreen(navController: NavController, viewModel: AlbumViewModel = hiltViewModel()) {
+fun AlbumScreen(navController: NavController,
+                viewModel: AlbumViewModel = hiltViewModel(),
+                injectedUiState: GalleryUiState? = null,
+                permissionsOverride: Boolean = false
+) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val observedUiState by viewModel.uiState.collectAsState()
+    val uiState = injectedUiState ?: observedUiState
+
     val layoutMode = rememberSaveable { mutableStateOf(LayoutMode.Grid) }
     val permissionsGranted = remember { mutableStateOf(false) }
 
@@ -89,7 +102,7 @@ fun AlbumScreen(navController: NavController, viewModel: AlbumViewModel = hiltVi
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (!permissionsGranted.value) {
+            if (!permissionsGranted.value && !permissionsOverride) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -118,13 +131,15 @@ fun AlbumScreen(navController: NavController, viewModel: AlbumViewModel = hiltVi
                     }
 
                     is GalleryUiState.Success -> {
-                        val albums = (uiState as GalleryUiState.Success).albums
+                        val albums = (uiState).albums
                         when (layoutMode.value) {
                             LayoutMode.Grid -> {
                                 LazyVerticalGrid(
                                     columns = GridCells.Fixed(2),
                                     contentPadding = PaddingValues(4.dp),
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .testTag("albumGrid")
                                 ) {
                                     items(albums) { album ->
                                         AlbumCard(album = album, onClick = {
@@ -135,7 +150,10 @@ fun AlbumScreen(navController: NavController, viewModel: AlbumViewModel = hiltVi
                             }
 
                             LayoutMode.List -> {
-                                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                LazyColumn(modifier = Modifier
+                                    .fillMaxSize()
+                                    .testTag("albumList")
+                                ) {
                                     items(albums) { album ->
                                         AlbumCard(album = album) {
                                             navController.navigate("albumDetail/${album.name}")
@@ -148,7 +166,7 @@ fun AlbumScreen(navController: NavController, viewModel: AlbumViewModel = hiltVi
 
                     is GalleryUiState.Error -> {
                         Text(
-                            text = "Error: ${(uiState as GalleryUiState.Error).message}"
+                            text = "Error: ${(uiState).message}"
                         )
                     }
                 }
