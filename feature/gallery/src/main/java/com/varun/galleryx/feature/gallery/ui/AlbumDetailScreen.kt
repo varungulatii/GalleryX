@@ -33,14 +33,25 @@ import androidx.navigation.NavController
 import com.varun.galleryx.feature.gallery.ui.components.MediaThumbnailCard
 import com.varun.galleryx.feature.gallery.ui.utils.LayoutMode
 
+@Composable
+fun AlbumDetailScreen(
+    albumName: String,
+    navController: NavController,
+) {
+    val viewModel: AlbumDetailViewModel = hiltViewModel()
+    AlbumDetailScreen(albumName, navController, viewModel)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumDetailScreen(
     albumName: String,
     navController: NavController,
-    viewModel: AlbumDetailViewModel = hiltViewModel()
+    viewModel: AlbumDetailViewModel = hiltViewModel(),
+    injectedUiState: AlbumDetailUiState? = null
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val observedState by viewModel.uiState.collectAsState()
+    val uiState = injectedUiState ?: observedState
     val layoutMode = rememberSaveable { mutableStateOf(LayoutMode.Grid) }
 
     Scaffold(
@@ -85,12 +96,12 @@ fun AlbumDetailScreen(
 
                 is AlbumDetailUiState.Error -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Error: ${(uiState as AlbumDetailUiState.Error).message}")
+                        Text("Error: ${(uiState).message}")
                     }
                 }
 
                 is AlbumDetailUiState.Success -> {
-                    val media = (uiState as AlbumDetailUiState.Success).media
+                    val media = (uiState).media
                     if (media.isEmpty()) {
                         Text("No media found", modifier = Modifier.align(Alignment.Center))
                     } else {

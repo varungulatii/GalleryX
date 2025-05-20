@@ -25,7 +25,12 @@ class AlbumDetailViewModelTest {
     @Test
     fun `loadMedia emits Success when use case returns media items`() = runTest {
         val dummyAlbum = "Camera"
-        val dummyMedia = listOf(MediaItem(1, uri = mockk(), "image/jpeg", "img.jpg", "Camera", MediaType.IMAGE))
+        val dummyMedia = listOf(MediaItem(1,
+            uri = mockk(),
+            mimeType = "image/jpeg",
+            displayName = "img.jpg",
+            folderName = "Camera",
+             mediaType  = MediaType.IMAGE))
 
         coEvery { getMediaInAlbumUseCase(dummyAlbum) } returns dummyMedia
 
