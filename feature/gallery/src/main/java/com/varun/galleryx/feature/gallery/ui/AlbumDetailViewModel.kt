@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AlbumDetailViewModel @Inject constructor(
+open class AlbumDetailViewModel @Inject constructor(
     private val getMediaInAlbumUseCase: GetMediaInAlbumUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
