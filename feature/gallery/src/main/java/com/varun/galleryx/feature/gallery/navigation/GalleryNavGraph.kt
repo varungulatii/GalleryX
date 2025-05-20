@@ -8,14 +8,12 @@ import androidx.navigation.compose.composable
 import com.varun.galleryx.feature.gallery.ui.AlbumDetailScreen
 import com.varun.galleryx.feature.gallery.ui.AlbumDetailViewModel
 import com.varun.galleryx.feature.gallery.ui.AlbumScreen
-import com.varun.galleryx.feature.gallery.ui.AlbumViewModel
 
 @Composable
 fun GalleryNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "gallery") {
         composable("gallery") {
-            val viewModel: AlbumViewModel = hiltViewModel()
-            AlbumScreen(navController, viewModel)
+            AlbumScreen(navController)
         }
 
         composable("albumDetail/{albumName}") { backStackEntry ->

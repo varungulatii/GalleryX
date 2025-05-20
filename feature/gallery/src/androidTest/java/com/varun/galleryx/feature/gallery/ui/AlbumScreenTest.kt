@@ -1,11 +1,14 @@
 package com.varun.galleryx.feature.gallery.ui
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.navigation.compose.rememberNavController
 import com.varun.galleryx.domain.model.Album
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
@@ -14,6 +17,7 @@ class AlbumScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
+    @SuppressLint("ViewModelConstructorInComposable")
     @Test
     fun albumCards_areDisplayed_whenUiStateIsSuccess() {
         val dummyAlbums = listOf(
@@ -22,9 +26,11 @@ class AlbumScreenTest {
         )
 
         composeTestRule.setContent {
-            AlbumScreenFake(
-                uiState = GalleryUiState.Success(dummyAlbums),
-                onAlbumClick = {}
+            AlbumScreen(
+                navController = rememberNavController(),
+                viewModel = DummyAlbumViewModel() ,
+                injectedUiState = GalleryUiState.Success(dummyAlbums),
+                permissionsOverride = true
             )
         }
 
@@ -32,6 +38,7 @@ class AlbumScreenTest {
         composeTestRule.onNodeWithTag("albumCard_Screenshots").assertExists() // Screenshots card should be visible
     }
 
+    @SuppressLint("ViewModelConstructorInComposable")
     @Test
     fun layoutToggles_betweenGridAndList() {
         val dummyAlbums = listOf(
@@ -40,9 +47,11 @@ class AlbumScreenTest {
         )
 
         composeTestRule.setContent {
-            AlbumScreenFake(
-                uiState = GalleryUiState.Success(dummyAlbums),
-                onAlbumClick = {}
+            AlbumScreen(
+                navController = rememberNavController(),
+                viewModel = DummyAlbumViewModel() ,
+                injectedUiState = GalleryUiState.Success(dummyAlbums),
+                permissionsOverride = true
             )
         }
 
@@ -54,3 +63,6 @@ class AlbumScreenTest {
     }
 }
 
+class DummyAlbumViewModel : AlbumViewModel(
+    getAllAlbumsUseCase = mockk(relaxed = true)
+)
